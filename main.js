@@ -25,7 +25,15 @@ homeButton.onclick = () => {
     clearPagesFromMonitor();
     renderPage2();
 };
+aboutButton.onclick = () => {
+    if (document.querySelector('#chartContainer')) {
+        stopCryptoChart();
+    }
+    clearPagesFromMonitor();
+    renderPage3();
+};
 liveReportsButton.onclick = () => {
+    clearPagesFromMonitor();
     renderPage4();
 };
 searchButton.onclick = () => {
@@ -33,13 +41,6 @@ searchButton.onclick = () => {
         stopCryptoChart();
     }
     search();
-};
-aboutButton.onclick = () => {
-    if (document.querySelector('#chartContainer')) {
-        stopCryptoChart();
-    }
-    clearPagesFromMonitor();
-    renderPage3();
 };
 //////////////////////////////////////////-END OF LOADING STUFF-/////////////////////////////////////////////
 const selectedCurrencies = [];

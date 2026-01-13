@@ -37,7 +37,16 @@ homeButton.onclick = (): void => {
   renderPage2();
 };
 
+aboutButton.onclick = (): void => {
+  if (document.querySelector('#chartContainer')) {
+    stopCryptoChart();
+  }
+  clearPagesFromMonitor();
+  renderPage3();
+};
+
 liveReportsButton.onclick = (): void => {
+  clearPagesFromMonitor();
   renderPage4();
 };
 
@@ -48,13 +57,7 @@ searchButton.onclick = (): void => {
   search();
 };
 
-aboutButton.onclick = (): void => {
-  if (document.querySelector('#chartContainer')) {
-    stopCryptoChart();
-  }
-  clearPagesFromMonitor();
-  renderPage3();
-};
+
 
 //////////////////////////////////////////-END OF LOADING STUFF-/////////////////////////////////////////////
 
