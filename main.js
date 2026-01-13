@@ -17,7 +17,7 @@ mainInput.addEventListener('keydown', (event) => {
 setTimeout(() => {
     container.scrollTop = 590;
 }, 0);
-///---Buttons Functionality blat mother fuckersssss---///
+///---Buttons Functionality---///
 homeButton.onclick = () => {
     if (document.querySelector('#chartContainer')) {
         stopCryptoChart();
@@ -26,24 +26,7 @@ homeButton.onclick = () => {
     renderPage2();
 };
 liveReportsButton.onclick = () => {
-    if (selectedCurrencies.length === 0) {
-        return;
-    }
-    stopCryptoChart();
-    clearPagesFromMonitor();
-    const symbols = selectedCurrencies.map(c => c.symbol.toUpperCase());
-    const fiveSymbols = [
-        symbols[0] || "",
-        symbols[1] || "",
-        symbols[2] || "",
-        symbols[3] || "",
-        symbols[4] || ""
-    ];
-    const chartDiv = document.createElement('div');
-    chartDiv.id = "chartContainer";
-    chartDiv.className = "chart-container";
-    pagesMonitor?.appendChild(chartDiv);
-    startCryptoChart(fiveSymbols[0], fiveSymbols[1], fiveSymbols[2], fiveSymbols[3], fiveSymbols[4], myApiKey);
+    renderPage4();
 };
 searchButton.onclick = () => {
     if (document.querySelector('#chartContainer')) {
@@ -61,7 +44,7 @@ aboutButton.onclick = () => {
 //////////////////////////////////////////-END OF LOADING STUFF-/////////////////////////////////////////////
 const selectedCurrencies = [];
 let pendingSixth = null;
-/*-------------------------------------RENDER-PAGE-2-MOTHER-FUCKER!!!!!----------------------------------*/
+/*-------------------------------------RENDER-PAGE-2----------------------------------*/
 function renderPage2() {
     const listContainer = document.createElement('div');
     listContainer.className = 'pages-monitor';
@@ -69,8 +52,8 @@ function renderPage2() {
     const currencyList = manager.currencyList.slice(0, 99);
     renderCurrencyList(currencyList, listContainer);
 }
-/*----------------------------------END-OF-renderPage2-Thank-God-----------------------------------------*/
-/*--------------------------RENDER-PAGE-3-MOTHER-FUCKER!!!!!-----------------------------*/
+/*----------------------------------END-OF-renderPage2---------------------------------*/
+/*--------------------------RENDER-PAGE-3---------------------------------------------*/
 function renderPage3() {
     clearPagesFromMonitor();
     const container = document.createElement('div');
@@ -91,15 +74,34 @@ function renderPage3() {
     imgWrapper.className = 'img-wrapper';
     const midSectionAbout = document.createElement('div');
     midSectionAbout.className = 'mid-section-about';
-    const page3Container = document.createElement('div');
-    page3Container.className = 'page-3-container';
     imgWrapper.appendChild(img);
     midSectionAbout.append(textWrapper, imgWrapper);
-    page3Container.append(title, midSectionAbout);
-    pagesMonitor?.appendChild(page3Container);
+    container.append(title, midSectionAbout);
+    pagesMonitor?.appendChild(container);
 }
-/*----------------------------------END-OF-renderPage3-Thank-God-----------------------------------------*/
-/*-------------------------------------RENDER-PAGE-4-MOTHER-FUCKER!!!!!----------------------------------*/
+/*----------------------------------END-OF-renderPage3---------------------------------*/
+/*-------------------------------------RENDER-PAGE-4 (Live Reports)--------------------*/
+async function renderPage4() {
+    if (selectedCurrencies.length === 0) {
+        return;
+    }
+    stopCryptoChart();
+    clearPagesFromMonitor();
+    const symbols = selectedCurrencies.map(c => c.symbol.toUpperCase());
+    const fiveSymbols = [
+        symbols[0] || "",
+        symbols[1] || "",
+        symbols[2] || "",
+        symbols[3] || "",
+        symbols[4] || ""
+    ];
+    const chartDiv = document.createElement('div');
+    chartDiv.id = "chartContainer";
+    chartDiv.className = "chart-container";
+    pagesMonitor?.appendChild(chartDiv);
+    startCryptoChart(fiveSymbols[0], fiveSymbols[1], fiveSymbols[2], fiveSymbols[3], fiveSymbols[4], myApiKey);
+}
+/*----------------------------------CHART LOGIC---------------------------------------*/
 let chart;
 let updateIntervalId = null;
 const maxPoints = 20;
@@ -118,7 +120,7 @@ function formatTimeLabel(e) {
     return `${h}:${m}:${s}`;
 }
 function startCryptoChart(currency1, currency2, currency3, currency4, currency5, apiKey) {
-    const coins = [currency1, currency2, currency3, currency4, currency5];
+    const coins = [currency1, currency2, currency3, currency4, currency5].filter(Boolean);
     const colors = ["cyan", "lime", "blue", "gold", "red"];
     const dataSeries = coins.map((coin, i) => ({
         type: "spline",
@@ -179,7 +181,7 @@ function stopCryptoChart() {
         updateIntervalId = null;
     }
 }
-/*----------------------------------END-OF-renderPage4-Thank-God-----------------------------------------*/
+/*----------------------------------END-OF-CHART-LOGIC--------------------------------*/
 function createCollapserContainer(currency) {
     if (!currency)
         return '';
@@ -193,7 +195,7 @@ function createCollapserContainer(currency) {
     </div>
   `;
 }
-//////////-----------------------------RENDERING_FUNCTIONS_MOTHER_FUCKER-----------------------------------//////
+/*----------------------------------RENDERING FUNCTIONS--------------------------------*/
 function renderCurrencyList(arr, monitor) {
     arr.forEach(currency => {
         const card = document.createElement('div');
@@ -247,9 +249,7 @@ function renderCurrencyList(arr, monitor) {
                 collapserContainer.innerHTML = createCollapserContainer(dataToUse);
                 cardContainer.appendChild(collapserContainer);
             }
-            // Toggle visibility state
             currency.isCollapsed = !currency.isCollapsed;
-            // Show/hide the container
             collapserContainer.style.display = currency.isCollapsed ? 'none' : 'block';
         });
         toggle?.addEventListener('click', () => {

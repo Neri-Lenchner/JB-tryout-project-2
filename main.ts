@@ -15,18 +15,19 @@ const liveReportsButton = document.querySelector('#live-reports-button') as HTML
 
 const mainInput: HTMLInputElement | null = document.querySelector('#main-input') as HTMLInputElement;
 
-const myApiKey: string ='785e25aa48363b73d265706d01aaf5b730d0f78a58578a8ab52f211ae73e2293';
+const myApiKey: string = '785e25aa48363b73d265706d01aaf5b730d0f78a58578a8ab52f211ae73e2293';
+
 mainInput.addEventListener('keydown', (event: KeyboardEvent): void => {
-  if(event.key === 'Enter') {
+  if (event.key === 'Enter') {
     search();
   }
-})
+});
 
 setTimeout((): void => {
   container.scrollTop = 590;
 }, 0);
 
-///---Buttons Functionality blat mother fuckersssss---///
+///---Buttons Functionality---///
 
 homeButton.onclick = (): void => {
   if (document.querySelector('#chartContainer')) {
@@ -37,9 +38,87 @@ homeButton.onclick = (): void => {
 };
 
 liveReportsButton.onclick = (): void => {
+  renderPage4();
+};
+
+searchButton.onclick = (): void => {
+  if (document.querySelector('#chartContainer')) {
+    stopCryptoChart();
+  }
+  search();
+};
+
+aboutButton.onclick = (): void => {
+  if (document.querySelector('#chartContainer')) {
+    stopCryptoChart();
+  }
+  clearPagesFromMonitor();
+  renderPage3();
+};
+
+//////////////////////////////////////////-END OF LOADING STUFF-/////////////////////////////////////////////
+
+const selectedCurrencies: Currency[] = [];
+let pendingSixth: Currency | null = null;
+
+/*-------------------------------------RENDER-PAGE-2----------------------------------*/
+
+function renderPage2(): void {
+  const listContainer: HTMLDivElement = document.createElement('div');
+  listContainer.className = 'pages-monitor';
+  pagesMonitor?.appendChild(listContainer);
+  const currencyList: Currency[] = manager.currencyList.slice(0, 99);
+  renderCurrencyList(currencyList, listContainer);
+}
+
+/*----------------------------------END-OF-renderPage2---------------------------------*/
+
+/*--------------------------RENDER-PAGE-3---------------------------------------------*/
+
+function renderPage3(): void {
+  clearPagesFromMonitor();
+
+  const container: HTMLDivElement = document.createElement('div');
+  container.classList.add('page-3-container');
+
+  const title: HTMLHeadingElement = document.createElement('h1');
+  title.className = 'about-headline';
+  title.textContent = 'About-Me';
+
+  const text: HTMLParagraphElement = document.createElement('p');
+  text.className = 'about';
+  text.textContent = 'I am a young web developer who intends to integrate all the rich life experience he has accumulated, over the thousand years that have passed him, into the amazing humble art of web development. Born in 1977 and been making music most of my life, I see web development as a direct continuation of my previous occupation and I find this new occupation mind-blowing';
+
+  const textWrapper: HTMLDivElement = document.createElement('div');
+  textWrapper.className = 'about-wrapper';
+  textWrapper.appendChild(text);
+
+  const img: HTMLImageElement = document.createElement('img');
+  img.className = 'my-own-image';
+  img.src = 'me.jpg';
+
+  const imgWrapper: HTMLDivElement = document.createElement('div');
+  imgWrapper.className = 'img-wrapper';
+  const midSectionAbout: HTMLDivElement = document.createElement('div');
+  midSectionAbout.className = 'mid-section-about';
+
+  imgWrapper.appendChild(img);
+  midSectionAbout.append(textWrapper, imgWrapper);
+
+  container.append(title, midSectionAbout);
+
+  pagesMonitor?.appendChild(container);
+}
+
+/*----------------------------------END-OF-renderPage3---------------------------------*/
+
+/*-------------------------------------RENDER-PAGE-4 (Live Reports)--------------------*/
+
+async function renderPage4(): Promise<void> {
   if (selectedCurrencies.length === 0) {
     return;
   }
+
   stopCryptoChart();
   clearPagesFromMonitor();
 
@@ -59,82 +138,18 @@ liveReportsButton.onclick = (): void => {
 
   pagesMonitor?.appendChild(chartDiv);
 
-  startCryptoChart(fiveSymbols[0], fiveSymbols[1], fiveSymbols[2], fiveSymbols[3], fiveSymbols[4], myApiKey );
-};
-
-searchButton.onclick = (): void => {
-  if (document.querySelector('#chartContainer')) {
-    stopCryptoChart();
-  }
-  search();
-};
-
-aboutButton.onclick = (): void => {
-  if (document.querySelector('#chartContainer')) {
-    stopCryptoChart();
-  }
-  clearPagesFromMonitor();
-  renderPage3();
+  startCryptoChart(
+      fiveSymbols[0],
+      fiveSymbols[1],
+      fiveSymbols[2],
+      fiveSymbols[3],
+      fiveSymbols[4],
+      myApiKey
+  );
 }
 
-//////////////////////////////////////////-END OF LOADING STUFF-/////////////////////////////////////////////
+/*----------------------------------CHART LOGIC---------------------------------------*/
 
-const selectedCurrencies: Currency[] = [];
-let pendingSixth: Currency | null = null;
-
-/*-------------------------------------RENDER-PAGE-2-MOTHER-FUCKER!!!!!----------------------------------*/
-
-function renderPage2(): void{
-  const listContainer:HTMLDivElement = document.createElement('div');
-  listContainer.className = 'pages-monitor';
-  pagesMonitor?.appendChild(listContainer);
-  const currencyList: Currency[] = manager.currencyList.slice(0, 99);
-  renderCurrencyList(currencyList, listContainer);
-}
-
-/*----------------------------------END-OF-renderPage2-Thank-God-----------------------------------------*/
-
-/*--------------------------RENDER-PAGE-3-MOTHER-FUCKER!!!!!-----------------------------*/
-
-function renderPage3(): void {
-  clearPagesFromMonitor();
-
-  const container: HTMLDivElement = document.createElement('div');
-  container.classList.add('page-3-container');
-
-  const title: HTMLHeadingElement = document.createElement('h1');
-  title.className = 'about-headline';
-  title.textContent = 'About-Me';
-
-  const text: HTMLParagraphElement = document.createElement('p');
-  text.className = 'about';
-  text.textContent = 'I am a young web developer who intends to integrate all the rich life experience he has accumulated, over the thousand years that have passed him, into the amazing humble art of web development. Born in 1977 and been making music most of my life, I see web development as a direct continuation of my previous occupation and I find this new occupation mind-blowing';
-
-  const textWrapper: HTMLDivElement = document.createElement('div');
-  textWrapper.className = 'about-wrapper';
-  textWrapper.appendChild(text);
-  const img: HTMLImageElement = document.createElement('img');
-  img.className = 'my-own-image';
-  img.src = 'me.jpg';
-
-  const imgWrapper: HTMLDivElement = document.createElement('div');
-  imgWrapper.className = 'img-wrapper';
-  const midSectionAbout: HTMLDivElement = document.createElement('div');
-  midSectionAbout.className = 'mid-section-about';
-  const page3Container: HTMLDivElement = document.createElement('div');
-  page3Container.className = 'page-3-container';
-  imgWrapper.appendChild(img);
-  midSectionAbout.append(textWrapper, imgWrapper);
-
-  page3Container.append(title, midSectionAbout);
-
-  pagesMonitor?.appendChild(page3Container);
-}
-
-/*----------------------------------END-OF-renderPage3-Thank-God-----------------------------------------*/
-
-
-/*-------------------------------------RENDER-PAGE-4-MOTHER-FUCKER!!!!!----------------------------------*/
 let chart: any;
 let updateIntervalId: number | null = null;
 const maxPoints: number = 20;
@@ -162,7 +177,7 @@ function startCryptoChart(
     currency5: string,
     apiKey?: string
 ): void {
-  const coins: string[] = [currency1, currency2, currency3, currency4, currency5];
+  const coins: string[] = [currency1, currency2, currency3, currency4, currency5].filter(Boolean);
   const colors: string[] = ["cyan", "lime", "blue", "gold", "red"];
 
   const dataSeries: any[] = coins.map((coin: string, i: number) => ({
@@ -229,8 +244,7 @@ function stopCryptoChart(): void {
   }
 }
 
-/*----------------------------------END-OF-renderPage4-Thank-God-----------------------------------------*/
-
+/*----------------------------------END-OF-CHART-LOGIC--------------------------------*/
 
 function createCollapserContainer(currency: Currency | null): string {
   if (!currency) return '';
@@ -246,12 +260,11 @@ function createCollapserContainer(currency: Currency | null): string {
   `;
 }
 
-//////////-----------------------------RENDERING_FUNCTIONS_MOTHER_FUCKER-----------------------------------//////
+/*----------------------------------RENDERING FUNCTIONS--------------------------------*/
 
 function renderCurrencyList(arr: Currency[], monitor: HTMLElement | null): void {
-
   arr.forEach(currency => {
-    const card:HTMLElement = document.createElement('div');
+    const card: HTMLElement = document.createElement('div');
     card.classList.add('card');
     card.innerHTML = `
         <div class="card-left">
@@ -280,7 +293,6 @@ function renderCurrencyList(arr: Currency[], monitor: HTMLElement | null): void 
     toggle?.classList.toggle('on', currency.isOn);
 
     moreInfoBtn?.addEventListener('click', async (): Promise<void> => {
-
       let collapserContainer: HTMLDivElement | null = cardContainer.querySelector('.collapser-container');
 
       if (!collapserContainer) {
@@ -313,15 +325,11 @@ function renderCurrencyList(arr: Currency[], monitor: HTMLElement | null): void 
         cardContainer.appendChild(collapserContainer);
       }
 
-      // Toggle visibility state
       currency.isCollapsed = !currency.isCollapsed;
-
-      // Show/hide the container
       collapserContainer.style.display = currency.isCollapsed ? 'none' : 'block';
     });
 
     toggle?.addEventListener('click', (): void => {
-
       if (!currency.isOn && selectedCurrencies.length === 5) {
         pendingSixth = currency;
         renderSelectedCards();
@@ -337,11 +345,15 @@ function renderCurrencyList(arr: Currency[], monitor: HTMLElement | null): void 
         if (index !== -1) selectedCurrencies.splice(index, 1);
         pendingSixth = null;
       }
-      const singleCurrencyToggleButtons: NodeListOf<HTMLButtonElement> = document.querySelectorAll(`.toggle-btn[data-currency-id="${currency.id}"]`);
+
+      const singleCurrencyToggleButtons: NodeListOf<HTMLButtonElement> = document.querySelectorAll(
+          `.toggle-btn[data-currency-id="${currency.id}"]`
+      );
 
       singleCurrencyToggleButtons.forEach(btn => {
         btn.classList.toggle('on', currency.isOn);
       });
+
       renderSelectedCards();
     });
   });
@@ -352,7 +364,6 @@ function renderSelectedCards(): void {
   if (existingFixed) existingFixed.remove();
 
   if (selectedCurrencies.length === 5 && pendingSixth) {
-
     const fixedContainer: HTMLDivElement = document.createElement('div');
     fixedContainer.className = 'fixed-container';
 
@@ -360,7 +371,7 @@ function renderSelectedCards(): void {
     headline.className = 'headline';
     headline.innerHTML = '<div>You can only use 5 currencies</div>';
 
-    const closeButton:HTMLButtonElement = document.createElement('button');
+    const closeButton: HTMLButtonElement = document.createElement('button');
     closeButton.className = 'close-button-cancel';
     closeButton.innerHTML = 'Cancel';
     closeButton.addEventListener('click', (): void => {
