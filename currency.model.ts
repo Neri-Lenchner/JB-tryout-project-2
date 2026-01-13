@@ -11,6 +11,6 @@ export class Currency {
         public priceEUR: string = '',
         public priceILS: string = '',
         public timeStamp: number = 0,
-        public isCollapsed: boolean = true   // ← NEW
+        public isCollapsed: boolean = true
     ) {}
 }

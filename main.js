@@ -184,9 +184,8 @@ function createCollapserContainer(currency) {
     if (!currency)
         return '';
     const imgSrc = currency.image.large || '₵ryptonit€';
-    const stateClass = currency.isCollapsed ? 'collapsed' : 'expanded';
     return `
-    <div class="collapser ${stateClass}">
+    <div class="collapser">
       <img class="images" src="${imgSrc}">
       <div>Currency Price USD: <span class="collapser-span">${currency.priceUSD || 'priceUSD'}</span> $</div>
       <div>Currency Price EUR: <span class="collapser-span">${currency.priceEUR || 'priceEUR'}</span> €</div>
@@ -208,7 +207,7 @@ function renderCurrencyList(arr, monitor) {
             ${currency.name}
           </div>
           <button class="more-info-btn" data-currency-id="${currency.id}">
-            ${currency.isCollapsed ? 'More Info' : 'Less Info'}
+            More Info
           </button>
         </div>
         <div class="card-right">
@@ -219,7 +218,6 @@ function renderCurrencyList(arr, monitor) {
         cardContainer.className = 'card-container';
         cardContainer.appendChild(card);
         monitor?.appendChild(cardContainer);
-        // Query selectors — must come BEFORE using the variables
         const toggle = cardContainer.querySelector('.toggle-btn');
         const moreInfoBtn = cardContainer.querySelector('.more-info-btn');
         toggle?.classList.toggle('on', currency.isOn);
@@ -249,21 +247,11 @@ function renderCurrencyList(arr, monitor) {
                 collapserContainer.innerHTML = createCollapserContainer(dataToUse);
                 cardContainer.appendChild(collapserContainer);
             }
-            // Toggle the boolean state
+            // Toggle visibility state
             currency.isCollapsed = !currency.isCollapsed;
-            // Update classes
-            const collapser = collapserContainer.querySelector('.collapser');
-            if (collapser) {
-                collapser.classList.toggle('expanded', !currency.isCollapsed);
-                collapser.classList.toggle('collapsed', currency.isCollapsed);
-            }
-            // Update text on all matching buttons
-            document.querySelectorAll(`.more-info-btn[data-currency-id="${currency.id}"]`)
-                .forEach(btn => {
-                btn.textContent = currency.isCollapsed ? 'More Info' : 'Less Info';
-            });
+            // Show/hide the container
+            collapserContainer.style.display = currency.isCollapsed ? 'none' : 'block';
         });
-        // toggle button logic (unchanged)
         toggle?.addEventListener('click', () => {
             if (!currency.isOn && selectedCurrencies.length === 5) {
                 pendingSixth = currency;

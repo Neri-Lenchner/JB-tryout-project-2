@@ -228,12 +228,7 @@ header {
   left: 3px;
   transform: translateX(20px) translateY(-50%);
 }
-/*
-.toggle-btn:focus {
-  outline: 2px solid #4CAF50;
-  outline-offset: 2px;
-}
-*/
+
 /* CARD */
 
 .card-container {
@@ -328,28 +323,6 @@ header {
   border-top: none;
   border-radius: 0 0 5px 5px;
   box-shadow: 0 6px 10px -4px lightgreen;
-}
-
-.collapser {
-  transition: max-height 0.35s ease-out, opacity 0.25s ease-out;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.collapser.expanded {
-  max-height: 400px;   /* adjust if content is taller */
-  opacity: 1;
-}
-
-.collapser.collapsed {
-  max-height: 0;
-  opacity: 0;
-}
-
-.collapser-container {
-  overflow: hidden;
-  transition: padding 0.3s ease;
 }
 
 .images {
@@ -511,6 +484,7 @@ header {
   color: white;
   text-shadow: 1px  1px 20px mediumspringgreen;
 }
+
 /*------------------------------------------progress-bar-stuff-----------------------------------------------*/
 
 /* ===== Spinner container ===== */
@@ -589,17 +563,6 @@ header {
   to { transform: rotate(360deg); }
 }
 
-/* Button */
-/*
-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  background: black;
-  color: #FFD700;
-  border: 2px solid #FFD700;
-  cursor: pointer;
-}
-*/
 /*-------------------------render-page-4-stuff-blat---------------------*/
 
 /*------------@media------------*/
@@ -816,13 +779,3 @@ button {
     margin: 30px auto; /* פחות מרווח מלמעלה */
   }
 }
-
-/*
- CSS STUFF Background props:
-    Background props for a fuckin great Background:
-    background-image: url(blue-space.jpg);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    background-attachment: fixed;
-*/

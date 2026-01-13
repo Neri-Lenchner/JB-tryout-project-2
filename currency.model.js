@@ -10,8 +10,7 @@ export class Currency {
     priceILS;
     timeStamp;
     isCollapsed;
-    constructor(id, symbol, name, isOn = false, image = '', priceUSD = '', priceEUR = '', priceILS = '', timeStamp = 0, isCollapsed = true // ← NEW
-    ) {
+    constructor(id, symbol, name, isOn = false, image = '', priceUSD = '', priceEUR = '', priceILS = '', timeStamp = 0, isCollapsed = true) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
