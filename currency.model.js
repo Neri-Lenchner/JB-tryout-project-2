@@ -1,3 +1,4 @@
+import { Image } from "./image.model.js";
 export class Currency {
     id;
     symbol;
