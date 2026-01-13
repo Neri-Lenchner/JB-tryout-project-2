@@ -1,7 +1,7 @@
 declare var CanvasJS: any;
 
 import { manager } from './manager.js';
-import {Currency} from "./currency.model.js";
+import { Currency } from "./currency.model.js";
 
 const pagesMonitor = document.getElementById('pages-monitor');
 
@@ -67,7 +67,6 @@ searchButton.onclick = (): void => {
     stopCryptoChart();
   }
   search();
-  // console.log(oneCurrencyArr);   // ← this line can probably be removed too later
 };
 
 aboutButton.onclick = (): void => {
@@ -107,7 +106,6 @@ function renderPage3(): void {
   title.className = 'about-headline';
   title.textContent = 'About-Me';
 
-  // Stuff about me allegedly:
   const text: HTMLParagraphElement = document.createElement('p');
   text.className = 'about';
   text.textContent = 'I am a young web developer who intends to integrate all the rich life experience he has accumulated, over the thousand years that have passed him, into the amazing humble art of web development. Born in 1977 and been making music most of my life, I see web development as a direct continuation of my previous occupation and I find this new occupation mind-blowing';
@@ -132,15 +130,15 @@ function renderPage3(): void {
 
   pagesMonitor?.appendChild(page3Container);
 }
+
 /*----------------------------------END-OF-renderPage3-Thank-God-----------------------------------------*/
 
 
 /*-------------------------------------RENDER-PAGE-4-MOTHER-FUCKER!!!!!----------------------------------*/
-let chart: any; // that fucker comes from canvas js //
+let chart: any;
 let updateIntervalId: number | null = null;
 const maxPoints: number = 20;
 
-// Y axis
 function addSymbols(e: { value: number }): string {
   const suffixes: string[] = ["", "K", "M", "B"];
   let order: number = Math.max(Math.floor(Math.log(Math.abs(e.value)) / Math.log(1000)), 0);
@@ -149,14 +147,12 @@ function addSymbols(e: { value: number }): string {
   return "$" + formattedValue + suffixes[order];
 }
 
-// X axis
 function formatTimeLabel(e: { value: Date }): string {
   const h: string = String(e.value.getHours()).padStart(2, "0");
   const m: string = String(e.value.getMinutes()).padStart(2, "0");
   const s: string = String(e.value.getSeconds()).padStart(2, "0");
   return `${h}:${m}:${s}`;
 }
-// THE MAIN FUNCTION FOR THE FUCKIN' FRIKIN' CRYING OUT LOUD!!!!! :
 
 function startCryptoChart(
     currency1: string,
@@ -206,8 +202,6 @@ function startCryptoChart(
 
   updateIntervalId = setInterval(async (): Promise<void> => {
     try {
-
-
       const data = await manager.getFiveCurrencies(coins, apiKey);
       if (!data) return;
       const now = new Date();
@@ -239,14 +233,17 @@ function stopCryptoChart(): void {
 
 
 function createCollapserContainer(currency: Currency | null): string {
-  const imgSrc: string = (currency?.image as any).large || '₵ryptonit€';
-  /// **********THAT: "(currency?.image as any)" I did not quite understand, but it is the only thing that works//
+  if (!currency) return '';
+  const imgSrc: string = (currency.image as any).large || '₵ryptonit€';
+
+  const stateClass = currency.isCollapsed ? 'collapsed' : 'expanded';
+
   return `
-    <div class="collapser">
+    <div class="collapser ${stateClass}">
       <img class="images" src="${imgSrc}">
-      <div>Currency Price USD: <span class="collapser-span">${currency?.priceUSD || 'priceUSD'}</span> $</div>
-      <div>Currency Price EUR: <span class="collapser-span">${currency?.priceEUR || 'priceEUR'}</span> €</div>
-      <div>Currency Price ILS: <span class="collapser-span">${currency?.priceILS || 'priceILS'}</span> ₪</div>
+      <div>Currency Price USD: <span class="collapser-span">${currency.priceUSD || 'priceUSD'}</span> $</div>
+      <div>Currency Price EUR: <span class="collapser-span">${currency.priceEUR || 'priceEUR'}</span> €</div>
+      <div>Currency Price ILS: <span class="collapser-span">${currency.priceILS || 'priceILS'}</span> ₪</div>
     </div>
   `;
 }
@@ -266,25 +263,25 @@ function renderCurrencyList(arr: Currency[], monitor: HTMLElement | null): void 
           <div class="currency-name">
             ${currency.name}
           </div>
-          <button class="more-info-btn">
-            More Info
+          <button class="more-info-btn" data-currency-id="${currency.id}">
+            ${currency.isCollapsed ? 'More Info' : 'Less Info'}
           </button>
         </div>
         <div class="card-right">
           <button class="toggle-btn" data-currency-id="${currency.id}"></button>
         </div>
       `;
+
     const cardContainer: HTMLElement = document.createElement('div');
     cardContainer.className = 'card-container';
     cardContainer.appendChild(card);
     monitor?.appendChild(cardContainer);
 
+    // Query selectors — must come BEFORE using the variables
     const toggle: HTMLButtonElement | null = cardContainer.querySelector('.toggle-btn');
     const moreInfoBtn: HTMLButtonElement | null = cardContainer.querySelector('.more-info-btn');
 
     toggle?.classList.toggle('on', currency.isOn);
-
-    ///--More-Info_button-fuckin-functionality-blat--//-mui-importanto-////
 
     moreInfoBtn?.addEventListener('click', async (): Promise<void> => {
 
@@ -293,35 +290,51 @@ function renderCurrencyList(arr: Currency[], monitor: HTMLElement | null): void 
       if (!collapserContainer) {
         collapserContainer = document.createElement('div');
         collapserContainer.className = 'collapser-container';
+
+        const twoMinutes = 120000;
+        let currencyData: Currency | null = null;
+
+        const stored: string | null = localStorage.getItem(`one-currency[${currency.id}]`);
+        if (stored) {
+          const parsed: Currency = JSON.parse(stored);
+          if (Date.now() - (parsed.timeStamp || 0) < twoMinutes) {
+            currencyData = parsed;
+          }
+        }
+
+        if (!currencyData) {
+          currencyData = await manager.getOneCurrency(currency.id);
+          if (currencyData) {
+            currencyData.timeStamp = Date.now();
+            manager.saveDataLocally(currencyData);
+          }
+        }
+
+        const dataToUse = currencyData || currency;
+        dataToUse.isCollapsed = currency.isCollapsed;
+
+        collapserContainer.innerHTML = createCollapserContainer(dataToUse);
         cardContainer.appendChild(collapserContainer);
-      } else {
-        collapserContainer.style.display = collapserContainer.style.display === 'none' ? 'block' : 'none';
-        return;
       }
 
-      const twoMinutes = 120000;
-      let currencyData: Currency | null = null;
+      // Toggle the boolean state
+      currency.isCollapsed = !currency.isCollapsed;
 
-      const stored: string | null = localStorage.getItem(`one-currency[${currency.id}]`);
-      if (stored) {
-        const parsed: Currency = JSON.parse(stored);
-        if (Date.now() - (parsed.timeStamp || 0) < twoMinutes) {
-          currencyData = parsed;
-        }
+      // Update classes
+      const collapser = collapserContainer.querySelector('.collapser') as HTMLElement | null;
+      if (collapser) {
+        collapser.classList.toggle('expanded', !currency.isCollapsed);
+        collapser.classList.toggle('collapsed', currency.isCollapsed);
       }
 
-      if (!currencyData) {
-        currencyData = await manager.getOneCurrency(currency.id);
-        if (currencyData) {
-          currencyData.timeStamp = Date.now();
-          manager.saveDataLocally(currencyData);
-        }
-      }
-      collapserContainer.innerHTML = createCollapserContainer(currencyData);
+      // Update text on all matching buttons
+      document.querySelectorAll(`.more-info-btn[data-currency-id="${currency.id}"]`)
+          .forEach(btn => {
+            btn.textContent = currency.isCollapsed ? 'More Info' : 'Less Info';
+          });
     });
 
-    //-----------------------------Card-Toggle-Button-Stuff-bla-bla-bla-----------------------------///
-
+    // toggle button logic (unchanged)
     toggle?.addEventListener('click', (): void => {
 
       if (!currency.isOn && selectedCurrencies.length === 5) {

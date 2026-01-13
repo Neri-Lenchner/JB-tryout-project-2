@@ -9,9 +9,9 @@ export class Currency {
     priceEUR;
     priceILS;
     timeStamp;
-    constructor(id, symbol, name, isOn = false, 
-    //  public image: Image = new Image('', '', ''),
-    image = '', priceUSD = '', priceEUR = '', priceILS = '', timeStamp = 0) {
+    isCollapsed;
+    constructor(id, symbol, name, isOn = false, image = '', priceUSD = '', priceEUR = '', priceILS = '', timeStamp = 0, isCollapsed = true // ← NEW
+    ) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
@@ -21,6 +21,7 @@ export class Currency {
         this.priceEUR = priceEUR;
         this.priceILS = priceILS;
         this.timeStamp = timeStamp;
+        this.isCollapsed = isCollapsed;
     }
 }
 //# sourceMappingURL=currency.model.js.map

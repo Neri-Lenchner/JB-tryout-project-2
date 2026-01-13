@@ -330,6 +330,28 @@ header {
   box-shadow: 0 6px 10px -4px lightgreen;
 }
 
+.collapser {
+  transition: max-height 0.35s ease-out, opacity 0.25s ease-out;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.collapser.expanded {
+  max-height: 400px;   /* adjust if content is taller */
+  opacity: 1;
+}
+
+.collapser.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapser-container {
+  overflow: hidden;
+  transition: padding 0.3s ease;
+}
+
 .images {
   height: 70px;
   border-radius: 50%;
